@@ -1,8 +1,8 @@
 # Free, easy SSL for your Elastic Beanstalk single instance.
 
-#### Why pay $20/month for SSL ("load balancing") when you can automatically fetch and renew certificates for your Elastic Beanstalk instance with these hot .ebextensions!
+#### Fetch and renew certificates for your Elastic Beanstalk instance automatically with these hot .ebextensions! Because you don't want to pay $20/month for load balancing.
 
-Now with 100% EFF, Let's Encrypt, and Certbot!
+Now with 100% [EFF](https://www.eff.org/), [Let's Encrypt](https://letsencrypt.org/), and [Certbot](https://certbot.eff.org/)!
 
 #### Disclaimer
 * Currently only configured for NGINX
@@ -17,18 +17,25 @@ Control ebcert with three Elastic Beanstalk environment variables:
 	* In all other cases, certificates will be issued by the Let's Encrypt staging server. *These certificates are not production ready.* [(Let's Encrypt rate limits)](https://letsencrypt.org/docs/rate-limits/)
 
 #### Usage
-1. Boot or redeploy your app with the ebcert .ebextensions.
-2. Set `CERT_EMAIL`, `CERT_DOMAIN`, and (if production-ready) `CERT_PRODUCTION` as Elastic Beanstalk environment variables.
-3. Profit!
+1. Customize nginx.conf to suit your use case.
+2. Boot or redeploy your app with your customized ebcert .ebextensions.
+3. Point desired `CERT_DOMAINS` to your Elastic Beanstalk environment. (ebcert uses certbot's webroot authentication method, which requires connectivity at the domain to be certified at the time of authentication.)
+4. Set `CERT_EMAIL`, `CERT_DOMAIN`, and (if production-ready) `CERT_PRODUCTION` as Elastic Beanstalk environment variables.
+5. Keep $20/month!
 
 #### Migrating to production
-Please note that if `CERT_PRODUCTION` was not `true` when ebcert first ran successfully, you have a certificate from the Let's Encrypt staging server that is not due for renewal and will not automatically be replaced. Replace your staging certificate with a production certificate by **a)** manually running certbot via SSH or **b)** cloning your environment with `CERT_PRODUCTION=true`.
+* Via environment variable
+	* Set the Elastic Beanstalk environment variable `CERT_PRODUCTION` to `true`
 
-##### Via SSH
-1. [SSH into your ec2 instance.](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html)
-2. Run `sudo /opt/ebcert/cert.sh -f`.
+* Via [SSH](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html)
+	* `sudo /opt/ebcert/cert.sh -m`
 
-##### Via [EB CLI](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html)
+* Via [EB CLI](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html) clone
+	* Point the domain(s) you wish to certify to a new CNAME you select for your clone (`your-new-env-cname`)
+	* `eb clone your-current-env-cname -n your-new-env-name -c your-new-env-cname --envvars CERT_PRODUCTION=true`
 
-1. Select your clone's CNAME (`your-new-env-cname`) and point the domain(s) you wish to certify to that CNAME.
-2. Run `eb clone your-current-env-cname -n your-new-env-name -c your-new-env-cname --envvars CERT_PRODUCTION=true`.
+### Changing certified domains
+Change (add, remove, swap) your certified domains at any time by changing the value of `CERT_DOMAIN`. Note that such changes will count toward your rate limit if `CERT_PRODUCTION` is `true`.
+
+#### Thanks
+Thanks to Tony Gutierrez and all participants in [this gist](https://gist.github.com/tony-gutierrez/198988c34e020af0192bab543d35a62a).
