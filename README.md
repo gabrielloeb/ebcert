@@ -14,7 +14,8 @@ Control ebcert with three Elastic Beanstalk environment variables:
 * `CERT_DOMAIN`: The domain or comma separated domains you want to certify
 * `CERT_PRODUCTION`:
 	* When `true`, genuine, production-ready  Let's Encrypt certificates will be issued
-	* In all other cases, certificates will be issued by the Let's Encrypt staging server. *These certificates are not production ready.* [(Let's Encrypt rate limits)](https://letsencrypt.org/docs/rate-limits/)
+	* In all other cases, certificates will be issued by the Let's Encrypt staging server. *These certificates are not production ready.*
+	* Let's Encrypt has serious [rate limits](https://letsencrypt.org/docs/rate-limits/). You are far more likely to encounter these limits when `CERT_PRODUCTION` is `true`.
 
 #### Usage
 1. Customize nginx.conf to suit your use case.
