@@ -20,7 +20,7 @@ Control ebcert with three Elastic Beanstalk environment variables:
 #### Usage
 1. Customize nginx.conf to suit your use case.
 2. Boot or redeploy your app with your customized ebcert .ebextensions.
-3. Point desired `CERT_DOMAINS` to your Elastic Beanstalk environment. (ebcert uses certbot's webroot authentication method, which requires connectivity at the domain to be certified at the time of authentication.)
+3. Point desired `CERT_DOMAINS` to your Elastic Beanstalk environment. (ebcert uses certbot's webroot authentication method, which requires connectivity at the domain at the time of authentication.)
 4. Set `CERT_EMAIL`, `CERT_DOMAIN`, and (if production-ready) `CERT_PRODUCTION` as Elastic Beanstalk environment variables.
 5. Keep $20/month!
 
